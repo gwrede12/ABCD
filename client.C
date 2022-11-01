@@ -17,22 +17,22 @@ int main() {
 	srand(time(NULL));
 	TCPclient c;
 	string host = "localhost";
-	string msg;
+	string msg,x,y,data;
 
 	//connect to host
 	c.conn(host , 2022);
 
 	int i=0;
-	bool goOn=1;
-	while(goOn){ // send and receive data
-		if((rand() % 20) < i++){
-			msg = string("BYEBYE");
-			goOn = 0;
-		}else{
-			msg = string("client wants this");
-		}
-		cout << "client sends:" << msg << endl;
-		c.sendData(msg);
+	while(1)
+	{ // send and receive data
+        cout<<"Please enter the Coords!"<<endl;
+        cout<<"X: ";
+        cin>>x;
+        cout<<"Y: ";
+        cin>>y;
+		cout << "client sends: " << x <<" and "<<y<< endl;
+        data= x+y;
+		c.sendData(data);
 		msg = c.receive(32);
 		cout << "got response:" << msg << endl;
 		sleep(1);

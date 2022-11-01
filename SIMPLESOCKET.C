@@ -192,8 +192,8 @@ string TCPserver::response(string incomingMsg){
 	return msg;
 }
 
-
 string TCPserver::myResponse(string input){
+
 	return string("NO DATA YET YET YET");
 }
 
