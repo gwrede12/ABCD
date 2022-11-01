@@ -36,9 +36,10 @@ public:
     SinkShips();
     ~SinkShips();
     void runSinkShips();
-    void setCoordX();
-    void setCoordY();
+    void setCoordX(char x);
+    void setCoordY(char y);
     string myResponse(string input);
+    void Coord();
 };
 
 int main(){
@@ -51,12 +52,14 @@ SinkShips::SinkShips():TCPserver(2022,25)
 {
     x_=0;
     y_=0;
+    hit_=0;
 }
 
 SinkShips::~SinkShips()
 {
     x_=0;
     y_=0;
+    hit_=0;
 }
 
 void SinkShips::runSinkShips()
@@ -65,31 +68,28 @@ void SinkShips::runSinkShips()
         res = w.shoot(x_,y_);
 		hit_= res;
 		cout << "shoot: (" << x_ << ", " << y_ << ") --> " << res << endl;
-	if(res != TASK3::GAME_OVER)
+	if(res == TASK3::GAME_OVER)
 	{
         exit(0);
 	}
 	w.printBoard();
 }
 
-void SinkShips::setCoordX()
+void SinkShips::setCoordX(char x)
 {
-    char a = dataRecv_[0];
-    int ia= (int)a-48;
-    x_=ia;
+        int ia= (int)x-48;
+        x_=ia;
+
 }
-void SinkShips::setCoordY()
+void SinkShips::setCoordY(char y)
 {
-    char b = dataRecv_[1];
-    int ib= (int)b-48;
-    y_=ib;
+        int ib= (int)y-48;
+        y_=ib;
 }
 
 string SinkShips::myResponse(string input)
 {
-
-    setCoordX();
-    setCoordY();
+    Coord();
     runSinkShips();
 
     if(hit_== 0)
@@ -103,5 +103,30 @@ string SinkShips::myResponse(string input)
 
 
 }
-
+void SinkShips::Coord()
+{
+   if(dataRecv_[2]=='\0')
+   {
+        setCoordX(dataRecv_[0]);
+        setCoordY(dataRecv_[1]);
+   }
+   else if((dataRecv_[2] !='\0')&&(dataRecv_[3] =='\0'))
+   {
+        if(dataRecv_[1]=='0')
+        {
+            x_=10;
+            setCoordY(dataRecv_[2]);
+        }
+        else
+        {
+            y_=10;
+            setCoordX(dataRecv_[0]);
+        }
+   }
+   else if((dataRecv_[3] !='\0')&&(dataRecv_[4] =='\0'))
+   {
+        x_=10;
+        y_=10;
+   }
+}
 
