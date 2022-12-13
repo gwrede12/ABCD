@@ -26,6 +26,12 @@ TASK3::World w(10,10,1,2,3,4);
 TASK3::ShootResult res;
 
 
+/**
+ *
+ *  \class SinkShips
+ *  \brief The class defining the  game of sink ships.
+ *
+ */
 class SinkShips:public TCPserver
 {
 public:
@@ -33,12 +39,57 @@ public:
     int y_;
     int hit_;
 public:
+
+    /**
+	 *
+	 * \brief constructor
+	 *
+	 */
     SinkShips();
+
+    /**
+	 *
+	 * \brief destructor
+	 *
+	 */
     ~SinkShips();
+    /**
+	 *
+	 * \brief runs the game sink ships
+	 *
+	 */
     void runSinkShips();
+    /**
+	 *
+	 * \brief setting the x coordinate of the shoot.
+	 *
+	 * \param x char the x coordinate from the client.
+	 *
+	 */
     void setCoordX(char x);
+    /**
+	 *
+	 * \brief setting the y coordinate of the shoot.
+	 *
+	 * \param y char the y coordinate from the client.
+	 *
+	 */
     void setCoordY(char y);
+    /**
+	 *
+	 * \brief server response to the client.
+	 *
+	 * \param input string from the client.
+	 *
+	 * \return string contains the response to the client.
+	 *
+	 */
     string myResponse(string input);
+     /**
+	 *
+	 * \brief shows the card of the game.
+	 *
+	 */
     void Coord();
 };
 
