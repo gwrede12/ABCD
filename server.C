@@ -21,9 +21,10 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+
 using namespace std;
-TASK3::World w(10,10,1,2,3,4);
-TASK3::ShootResult res;
+//TASK3::World w(10,10,1,2,3,4);
+//TASK3::ShootResult res;
 
 
 /**
@@ -37,7 +38,8 @@ class SinkShips:public TCPserver
 public:
     int x_;
     int y_;
-    int hit_;
+    int res_;
+    TASK3::World *w;
 public:
 
     /**
@@ -58,39 +60,13 @@ public:
 	 * \brief runs the game sink ships
 	 *
 	 */
-    void runSinkShips();
-    /**
-	 *
-	 * \brief setting the x coordinate of the shoot.
-	 *
-	 * \param x char the x coordinate from the client.
-	 *
-	 */
-    void setCoordX(char x);
-    /**
-	 *
-	 * \brief setting the y coordinate of the shoot.
-	 *
-	 * \param y char the y coordinate from the client.
-	 *
-	 */
-    void setCoordY(char y);
-    /**
-	 *
-	 * \brief server response to the client.
-	 *
-	 * \param input string from the client.
-	 *
-	 * \return string contains the response to the client.
-	 *
-	 */
+
     string myResponse(string input);
      /**
 	 *
 	 * \brief shows the card of the game.
 	 *
 	 */
-    void Coord();
 };
 
 int main(){
@@ -103,81 +79,51 @@ SinkShips::SinkShips():TCPserver(2022,25)
 {
     x_=0;
     y_=0;
-    hit_=0;
+    res_=0;
+    w=new TASK3::World;
 }
 
 SinkShips::~SinkShips()
 {
     x_=0;
     y_=0;
-    hit_=0;
+    res_=0;
+    delete w;
 }
 
-void SinkShips::runSinkShips()
-{
-
-        res = w.shoot(x_,y_);
-		hit_= res;
-		cout << "shoot: (" << x_ << ", " << y_ << ") --> " << res << endl;
-	if(res == TASK3::GAME_OVER)
-	{
-        exit(0);
-	}
-	w.printBoard();
-}
-
-void SinkShips::setCoordX(char x)
-{
-        int ia= (int)x-48;
-        x_=ia;
-
-}
-void SinkShips::setCoordY(char y)
-{
-        int ib= (int)y-48;
-        y_=ib;
-}
 
 string SinkShips::myResponse(string input)
 {
-    Coord();
-    runSinkShips();
-
-    if(hit_== 0)
+    int x, y;
+    if(input == "INIT")
     {
-        return string("BESIDES");
+        delete w;
+        w = new TASK3::World;
+        return string("OK");
+    }
+    else;
+        sscanf(input.c_str(), "COORD[%i,%i]", &x,&y);
+        x_=x;
+        y_=y;
+        int res = w->shoot(x_,y_);
+        res_=res;
+        cout << "shoot: (" << x_ << ", " << y_ << ") --> " << res_ << endl;
+        w->printBoard();
+
+
+	if(res_ == TASK3::GAME_OVER)
+	{
+        return string("GAME_OVER");
+	}
+
+    if(res_ == 0)
+    {
+        return string("0");
     }
     else
     {
-        return string("Hit!");
+        return string("1");
     }
 
 
 }
-void SinkShips::Coord()
-{
-   if(dataRecv_[2]=='\0')
-   {
-        setCoordX(dataRecv_[0]);
-        setCoordY(dataRecv_[1]);
-   }
-   else if((dataRecv_[2] !='\0')&&(dataRecv_[3] =='\0'))
-   {
-        if(dataRecv_[1]=='0')
-        {
-            x_=10;
-            setCoordY(dataRecv_[2]);
-        }
-        else
-        {
-            y_=10;
-            setCoordX(dataRecv_[0]);
-        }
-   }
-   else if((dataRecv_[3] !='\0')&&(dataRecv_[4] =='\0'))
-   {
-        x_=10;
-        y_=10;
-   }
-}
-
