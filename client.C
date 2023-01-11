@@ -17,37 +17,32 @@
 using namespace std;
 
 int main() {
+
 	srand(time(NULL));
 	TCPclient c;
 	string host = "localhost";
 	string msg,data;
-    int x, y;
+    int i=0;
 	//connect to host
 	c.conn(host , 2022);
-
-	while(1)
-	{ // send and receive data
-
+    //Algorithmus Reihe für Reihe
+    for(i=0;i<3;i++)
+    {
         try
         {
-        cout<< "clints sends: "<<"INIT"<<endl;
+            cout<< "clints sends: "<<"INIT"<<endl;
             c.sendData("INIT");
-            sleep(5);
             msg = c.receive(32);
             cout << "got response: " << msg << endl;
+            if(msg == "OK")     //Wenn der Server erfolgreich das Spielfeld geändert hat
+            {
             int x[10] = {1,2,3,4,5,6,7,8,9,10};
             int y[10] = {1,2,3,4,5,6,7,8,9,10};
-            int i= 0;
-            int k= 0;
-            int quantity = 0;
-            for (i=0; i<=10;i++)
-            {for (k=0; k<=10;k++)
+            int i= 0,k= 0,quantity = 0;
+            for (i=0; i<=10;i++){
+            for (k=0; k<=10;k++)
             {
-                    if(((x[i]<1)||(x[i]>10))||((y[k]<1)||(y[k]>10)))
-                    {
-                        //throw string("wrong values");
-                        continue;
-                    }
+
                         cout << "client sends: " << x[i] <<" and "<<y[k]<< endl;
                         stringstream Coords;
                         Coords<<"COORD["<<x[i]<<","<<y[k]<<"]";
@@ -66,13 +61,9 @@ int main() {
                         {
                             quantity = (((x[i]-1)*10)+y[k]);
                             cout << "got response: " << "GAME_OVER" << endl;
-                            cout << "Shoots: "<<quantity<<endl;
+                            cout<<"shoots: "<<quantity<<endl;
                             break ;
-                        }
-                        sleep(0.5);
-            }
-            }
-
+            }}}}
 
         }
         catch(string clientExeption )
@@ -83,24 +74,23 @@ int main() {
             {
                 cout<<"Error: unknown"<<endl;
             }
-
-
+    }
     //Zufallszahlen
-
-    try
+    for(i=0;i<3;i++)
+    {
+        try
         {
             srand(time(NULL));
             cout<< "clints sends: "<<"INIT"<<endl;
             c.sendData("INIT");
-            sleep(5);
             msg = c.receive(32);
             cout << "got response: " << msg << endl;
             int quantity = 0;
             while(msg != "GAME_OVER")
             {
                     quantity++;
-                    int x_rand=1+rand()%11;
-                    int y_rand =1+rand()%11;
+                    int x_rand=1+rand()%10;
+                    int y_rand =1+rand()%10;
                     cout << "client sends: " << x_rand <<" and "<<y_rand<< endl;
                     stringstream Coords;
                     Coords<<"COORD["<<x_rand<<","<<y_rand<<"]";
@@ -118,10 +108,10 @@ int main() {
                         if(msg == "GAME_OVER")
                         {
                             cout << "got response: " << "GAME_OVER" << endl;
-                            cout << "Shoots: "<<quantity<<endl;
+                            cout <<"shoots: "<<quantity<<endl;
                             break ;
                         }
-                        sleep(0.5);
+
             }
         }
         catch(string clientExeption )
@@ -133,6 +123,7 @@ int main() {
                 cout<<"Error: unknown"<<endl;
             }
 	}
+
 }
 
 

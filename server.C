@@ -57,16 +57,11 @@ public:
     ~SinkShips();
     /**
 	 *
-	 * \brief runs the game sink ships
+	 * \brief runs the game sink ships and sendend the results back to the client
 	 *
 	 */
-
     string myResponse(string input);
-     /**
-	 *
-	 * \brief shows the card of the game.
-	 *
-	 */
+
 };
 
 int main(){
@@ -95,35 +90,41 @@ SinkShips::~SinkShips()
 string SinkShips::myResponse(string input)
 {
     int x, y;
-    if(input == "INIT")
+    if(input.compare(0,4,"INIT") == 0)
     {
         delete w;
         w = new TASK3::World;
         return string("OK");
     }
-    else;
+    else if (input.compare(0,6,"COORD[") == 0){
         sscanf(input.c_str(), "COORD[%i,%i]", &x,&y);
         x_=x;
         y_=y;
         int res = w->shoot(x_,y_);
         res_=res;
-        cout << "shoot: (" << x_ << ", " << y_ << ") --> " << res_ << endl;
-        w->printBoard();
+        if(res_ == TASK3::GAME_OVER)
+        {
+            cout << "shot: (" << x_ << ", " << y_ << ") --> " << "GAME_OVER" << endl;
+            w->printBoard();
+            return string("GAME_OVER");
+        }
+        else
+        {
+            cout << "shot: (" << x_ << ", " << y_ << ") --> " << res_ << endl;
+            if(res_ == 0)
+            {
+            w->printBoard();
+            return string("0");
+            }
+            else
+            {
+            w->printBoard();
+            return string("1");
+            }
+        }
 
-
-	if(res_ == TASK3::GAME_OVER)
-	{
-        return string("GAME_OVER");
-	}
-
-    if(res_ == 0)
+    }else
     {
-        return string("0");
+        return string("unknown command");
     }
-    else
-    {
-        return string("1");
-    }
-
-
 }
