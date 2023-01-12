@@ -23,10 +23,6 @@
 #include <sstream>
 
 using namespace std;
-//TASK3::World w(10,10,1,2,3,4);
-//TASK3::ShootResult res;
-
-
 /**
  *
  *  \class SinkShips
@@ -35,10 +31,30 @@ using namespace std;
  */
 class SinkShips:public TCPserver
 {
-public:
+private:
+    /**
+     *
+     *  \brief Member for the x-coordinate
+     *
+     */
     int x_;
+    /**
+     *
+     *  \brief Member for the y-coordinate
+     *
+     */
     int y_;
+    /**
+     *
+     *  \brief Member for the result of the shoot
+     *
+     */
     int res_;
+    /**
+     *
+     *  \brief Member for the game world
+     *
+     */
     TASK3::World *w;
 public:
 
@@ -89,15 +105,41 @@ SinkShips::~SinkShips()
 
 string SinkShips::myResponse(string input)
 {
+    try
+    {
     int x, y;
+    //server is creating a new World for game
     if(input.compare(0,4,"INIT") == 0)
     {
         delete w;
         w = new TASK3::World;
         return string("OK");
     }
+    //Server is closing
+    else if(input.compare(0,5,"CLOSE") == 0)
+    {
+        delete w;
+        exit(0);
+    }
+    //Server evaluate the shoot
     else if (input.compare(0,6,"COORD[") == 0){
         sscanf(input.c_str(), "COORD[%i,%i]", &x,&y);
+        if(x<1)
+        {
+            return string("Wrong x parameter");
+        }
+        else if(y<1)
+        {
+            return string("Wrong y parameter");
+        }
+        else if(x>10)
+        {
+            return string("Wrong x parameter");
+        }
+        else if(y>10)
+        {
+            return string("Wrong y parameter");
+        }
         x_=x;
         y_=y;
         int res = w->shoot(x_,y_);
@@ -127,4 +169,10 @@ string SinkShips::myResponse(string input)
     {
         return string("unknown command");
     }
+    }
+    catch(...)
+        {
+            cout<<"Error: unknown"<<endl;
+        }
+
 }

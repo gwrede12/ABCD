@@ -25,7 +25,7 @@ int main() {
     int i=0;
 	//connect to host
 	c.conn(host , 2022);
-    //Algorithmus Reihe für Reihe
+    //Schießt Reihe für Reihe
     for(i=0;i<3;i++)
     {
         try
@@ -53,17 +53,18 @@ int main() {
                         {
                             cout << "got response: " << "miss" << endl;
                         }
-                        if(msg=="1")
+                        else if(msg=="1")
                         {
                             cout << "got response: " << "hit" << endl;
                         }
-                        if(msg == "GAME_OVER")
+                        else if(msg == "GAME_OVER")
                         {
                             quantity = (((x[i]-1)*10)+y[k]);
                             cout << "got response: " << "GAME_OVER" << endl;
                             cout<<"shoots: "<<quantity<<endl;
                             break ;
-            }}}}
+                        }else{throw string("unknown");}
+            }}}else{ throw string("Server not initialized");}
 
         }
         catch(string clientExeption )
@@ -75,7 +76,7 @@ int main() {
                 cout<<"Error: unknown"<<endl;
             }
     }
-    //Zufallszahlen
+    //Schuss nach Zufallszahlen
     for(i=0;i<3;i++)
     {
         try
@@ -84,6 +85,8 @@ int main() {
             cout<< "clints sends: "<<"INIT"<<endl;
             c.sendData("INIT");
             msg = c.receive(32);
+            if(msg == "OK")
+            {
             cout << "got response: " << msg << endl;
             int quantity = 0;
             while(msg != "GAME_OVER")
@@ -101,18 +104,20 @@ int main() {
                     {
                         cout << "got response: " << "miss" << endl;
                     }
-                    if(msg=="1")
+                    else if(msg=="1")
                     {
                         cout << "got response: " << "hit" << endl;
                     }
-                        if(msg == "GAME_OVER")
-                        {
+                    else if(msg == "GAME_OVER")
+                    {
                             cout << "got response: " << "GAME_OVER" << endl;
                             cout <<"shoots: "<<quantity<<endl;
                             break ;
-                        }
+                    }else{throw string("Error");}
 
             }
+            }else{ throw string("Server not initialized");}
+
         }
         catch(string clientExeption )
             {
@@ -123,6 +128,8 @@ int main() {
                 cout<<"Error: unknown"<<endl;
             }
 	}
+	//Server closing
+    c.sendData("CLOSE");
 
 }
 
